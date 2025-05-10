@@ -15,8 +15,9 @@ func RegisterRoutes(r *gin.Engine) {
 	api := r.Group("/api")
 	{
 		api.POST("/movies", controllers.CreateMovie)
-		api.GET("/movies:id", controllers.GetMovieByID)
+		api.GET("/movies/:id", controllers.GetMovieByID)
 		api.GET("/movies", controllers.GetMovies)
-
+		api.PUT("/movies/:id", controllers.UpdateMovie)
+		api.DELETE("/movies/:id",controllers.DeleteMovie)
 	}
 }
