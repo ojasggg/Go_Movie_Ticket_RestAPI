@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	log.Println("🚀 Server has (re)started – memory cleared")
 	r := gin.Default()
 
 	routes.RegisterRoutes(r)
