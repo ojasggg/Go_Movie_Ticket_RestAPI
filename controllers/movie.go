@@ -56,3 +56,54 @@ func GetMovieByID(c *gin.Context){
 
 	c.JSON(http.StatusNotFound, gin.H{"error" : "Movie not found"})
 }
+
+func UpdateMovie(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
+		return 
+	} 
+
+	var input models.CreateMovieInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
+		return
+	}
+
+	for i, movie := range movies {
+		if movie.ID == id {
+			movies[i].Title = input.Title
+			movies[i].Description = input.Description
+			movies[i].ShowTime = input.ShowTime
+			movies[i].AvailableSeats = input.AvailableSeats
+			movies[i].TotalSeats = input.TotalSeats
+
+			c.JSON(http.StatusOK, gin.H{"data" : movies[i]})
+			return
+		}
+	}
+
+	c.JSON(http.StatusNotFound, gin.H{"error" : "Movie not found"})
+}
+
+func DeleteMovie(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+
+	if err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
+		return
+	}
+
+	for i, movie := range movies {
+		if movie.ID == id{
+			movies = append(movies[:i], movies[i+1:]...)
+			c.JSON(http.StatusOK, gin.H{"message" : "Movie deleted"})
+			return 
+		}
+	}
+
+	c.JSON(http.StatusNotFound, gin.H{"error": "Movie not found"})
+}
