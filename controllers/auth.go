@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -12,6 +13,26 @@ import (
 
 var users []models.User
 var userIDCounter = 1
+
+func init() {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatalf("Failed to hash default admin password")
+	}
+
+	adminUser := models.User{
+		ID : userIDCounter,
+		Username: "admin",
+		Email: "admin@example.com",
+		Role: "admin",
+		Password: string(hashedPassword),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	users = append(users, adminUser)
+	userIDCounter ++
+}
 
 func Register (c *gin.Context) {
 	var input models.RegisterUser
