@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ojasggg/movie-theater-gin/models"
@@ -26,6 +27,8 @@ func CreateMovie(c *gin.Context){
 		ShowTime: input.ShowTime,
 		TotalSeats: input.TotalSeats,
 		AvailableSeats: input.AvailableSeats,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	movies = append(movies, movie)
@@ -79,6 +82,7 @@ func UpdateMovie(c *gin.Context) {
 			movies[i].ShowTime = input.ShowTime
 			movies[i].AvailableSeats = input.AvailableSeats
 			movies[i].TotalSeats = input.TotalSeats
+			movies[i].UpdatedAt = time.Now()
 
 			c.JSON(http.StatusOK, gin.H{"data" : movies[i]})
 			return

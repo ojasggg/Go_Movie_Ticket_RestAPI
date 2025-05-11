@@ -1,12 +1,16 @@
 package models
 
+import "time"
+
 type Movie struct {
 	ID int `json:"id"`
 	Title string `json:"title"`
 	Description string `json:"description"`
 	ShowTime string `json:"showTime"`
 	TotalSeats int `json:"totalSeats"`
-	AvailableSeats int `json:"availableSeats"`
+	AvailableSeats int `json:"availableSeats""`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type CreateMovieInput struct{
