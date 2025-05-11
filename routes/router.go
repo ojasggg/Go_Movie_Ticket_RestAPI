@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/ojasggg/movie-theater-gin/controllers"
+	"github.com/ojasggg/movie-theater-gin/middlewares"
 )
 
 func RegisterRoutes(r *gin.Engine) {
@@ -15,15 +16,17 @@ func RegisterRoutes(r *gin.Engine) {
 	api := r.Group("/api")
 	{
 		movieRoutes := api.Group("/movies")
+		movieRoutes.Use(middlewares.AuthMiddleware())
 		{
-			movieRoutes.POST("", controllers.CreateMovie)
+			movieRoutes.POST("", middlewares.RequireRole("admin"), controllers.CreateMovie)
 			movieRoutes.GET("/:id", controllers.GetMovieByID)
 			movieRoutes.GET("", controllers.GetMovies)
-			movieRoutes.PUT("/:id", controllers.UpdateMovie)
-			movieRoutes.DELETE("/:id",controllers.DeleteMovie)
+			movieRoutes.PUT("/:id", middlewares.RequireRole("admin"), controllers.UpdateMovie)
+			movieRoutes.DELETE("/:id", middlewares.RequireRole("admin"), controllers.DeleteMovie)
 		}
 
 		ticketRoutes := api.Group("/tickets")
+		ticketRoutes.Use(middlewares.AuthMiddleware())
 		{
 			ticketRoutes.POST("", controllers.CreateTicket)
 			ticketRoutes.GET("/:id", controllers.GetTicketByID)
