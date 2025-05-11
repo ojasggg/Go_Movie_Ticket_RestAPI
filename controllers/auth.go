@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ojasggg/movie-theater-gin/models"
+	"github.com/ojasggg/movie-theater-gin/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,6 +31,7 @@ func Register (c *gin.Context) {
 		Username: input.Username,
 		Email: input.Email,
 		Password: string(hashedPassword),
+		Role: "user",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -60,8 +62,15 @@ func Login(c *gin.Context){
 				return
 			}
 
+			token, err := utils.GenerateJWT(user.ID, user.Role)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error" : err.Error()})
+				return
+			}
+
 			c.JSON(http.StatusOK, gin.H{
-				"data" : gin.H{
+				"token" : token,
+				"user" : gin.H{
 					"id" : user.ID,
 					"username": user.Username,
 					"email" : user.Email,
@@ -69,8 +78,6 @@ func Login(c *gin.Context){
 			})
 			return
 		}	
-
-		
 	}
 
 	c.JSON(http.StatusNotFound, gin.H{"error" : "Invalid Credentials"})
