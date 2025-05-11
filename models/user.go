@@ -7,6 +7,7 @@ type User struct {
 	Username string `json:"username" binding:"required"`
 	Email string `josn:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
+	Role string `json:"role" binding:"required"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -15,6 +16,7 @@ type RegisterUser struct {
 	Username string `json:"username" binding:"required"`
 	Email string `josn:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
+	Role string `json:"role" binding:"required"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
