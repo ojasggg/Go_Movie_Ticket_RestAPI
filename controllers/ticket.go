@@ -20,16 +20,48 @@ func CreateTicket(c *gin.Context) {
 		return
 	}
 
+	userIDVal, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error" : "Unauthorized"})
+		return
+	}
+
+	userID, ok := userIDVal.(int)
+	if !ok{
+		c.JSON(http.StatusInternalServerError, gin.H{"error" : "Invalid user ID in token"})
+		return
+	}
+
+	var movieIndex = -1
+	for i, movie := range movies{
+		if movie.ID == input.MovieID {
+			movieIndex = i
+			break
+		}
+	}
+
+	if movieIndex == -1 {
+		c.JSON(http.StatusNotFound, gin.H{"error" : "Movie not found"})
+		return
+	}
+
+	if movies[movieIndex].AvailableSeats < input.Quantity {
+		c.JSON(http.StatusBadRequest, gin.H{"error" : "Not enough seats available"})
+		return
+	}
+
 	ticket := models.Ticket{
 		ID : ticketIDCounter,
-		UserID: input.UserID,
+		UserID: userID,
 		MovieID: input.MovieID,
 		Quantity: input.Quantity,
 		CreatedAt: time.Now(),
-
+		UpdatedAt: time.Now(),
 	}	
 	tickets = append(tickets, ticket)
 	ticketIDCounter ++ 
+
+	movies[movieIndex].AvailableSeats -= input.Quantity
 
 	c.JSON(http.StatusOK, gin.H{"data" : tickets})
 }
@@ -72,16 +104,47 @@ func UpdateTicket(c *gin.Context) {
 		return
 	}
 
+	var ticketIndex = -1
 	for i, ticket := range tickets{
 		if ticket.ID == id {
-			tickets[i].Quantity = input.Quantity
-
-			c.JSON(http.StatusOK, gin.H{"data" : tickets[i]})
-			return
+			ticketIndex = i
+			break
 		}
 	}
 
-	c.JSON(http.StatusNotFound, gin.H{"error": "Ticket not found"})
+	if ticketIndex == -1 {
+		c.JSON(http.StatusNotFound, gin.H{"error" : "Ticket not found"})
+		return
+	}
+
+	oldTicket := tickets[ticketIndex]
+
+	movieIndex := -1
+	for i, movie := range movies {
+		if movie.ID == oldTicket.MovieID{
+			movieIndex = i
+			break
+		}
+	}
+
+	if movieIndex == -1 {
+		c.JSON(http.StatusNotFound, gin.H{"error" : "Associated Movie not found"})
+		return
+	}
+
+	seatDiff := input.Quantity - oldTicket.Quantity
+
+	if seatDiff > 0 && movies[movieIndex].AvailableSeats < seatDiff {
+		c.JSON(http.StatusBadRequest, gin.H{"error" : "Not enough seats available for update"})
+		return
+	}
+
+	
+	tickets[ticketIndex].Quantity = input.Quantity
+	tickets[ticketIndex].UpdatedAt = time.Now()
+	movies[movieIndex].AvailableSeats -= seatDiff
+
+	c.JSON(http.StatusOK, gin.H{"data":tickets[ticketIndex]})
 }
 
 func DeleteTicket(c *gin.Context){
