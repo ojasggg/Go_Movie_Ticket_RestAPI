@@ -11,7 +11,7 @@ import (
 var jwtKey = []byte(os.Getenv("secret_key"))
 
 type JWTClaim struct {
-	UserID int `json:"userId"`
+	UserID int `json:"userID"`
 	Role string `json:"role"`
 	jwt.RegisteredClaims
 }
