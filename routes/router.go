@@ -31,5 +31,12 @@ func RegisterRoutes(r *gin.Engine) {
 			ticketRoutes.PUT("/:id", controllers.UpdateTicket)
 			ticketRoutes.DELETE("/:id", controllers.DeleteTicket)
 		}
+
+		authRoutes := api.Group("/auth")
+		{
+			authRoutes.POST("/register", controllers.Register)
+			authRoutes.POST("/login", controllers.Login)
+
+		}
 	}
 }
