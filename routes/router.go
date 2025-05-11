@@ -14,10 +14,22 @@ func RegisterRoutes(r *gin.Engine) {
 
 	api := r.Group("/api")
 	{
-		api.POST("/movies", controllers.CreateMovie)
-		api.GET("/movies/:id", controllers.GetMovieByID)
-		api.GET("/movies", controllers.GetMovies)
-		api.PUT("/movies/:id", controllers.UpdateMovie)
-		api.DELETE("/movies/:id",controllers.DeleteMovie)
+		movieRoutes := api.Group("/movies")
+		{
+			movieRoutes.POST("", controllers.CreateMovie)
+			movieRoutes.GET("/:id", controllers.GetMovieByID)
+			movieRoutes.GET("", controllers.GetMovies)
+			movieRoutes.PUT("/:id", controllers.UpdateMovie)
+			movieRoutes.DELETE("/:id",controllers.DeleteMovie)
+		}
+
+		ticketRoutes := api.Group("/tickets")
+		{
+			ticketRoutes.POST("", controllers.CreateTicket)
+			ticketRoutes.GET("/:id", controllers.GetTicketByID)
+			ticketRoutes.GET("", controllers.GetTickets)
+			ticketRoutes.PUT("/:id", controllers.UpdateTicket)
+			ticketRoutes.DELETE("/:id", controllers.DeleteTicket)
+		}
 	}
 }
