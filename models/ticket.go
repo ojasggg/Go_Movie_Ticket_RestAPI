@@ -8,11 +8,11 @@ type Ticket struct {
 	UserID int `json:"userId"`
 	Quantity int `json:"quantity"`
 	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type CreateTicketInput struct {
 	MovieID int `json:"movieId" binding:"required"`
-	UserID int `json:"userId" binding:"required"`
 	Quantity int `json:"quantity" binding:"required"`
 }
 
