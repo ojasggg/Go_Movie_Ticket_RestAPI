@@ -1,0 +1,48 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+
+# Output of the go build command
+/build/
+/bin/
+/dist/
+
+# Go workspace file (if using Go workspaces)
+go.work
+go.work.sum
+
+# Dependency directories (vendor if vendoring is used)
+/vendor/
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Env and config
+.env
+.env.*
+
+# GitHub Actions secrets (if you use them for local testing)
+.github/secrets/
+
+# Cover profiles
+coverage.out
+
+# Temporary files
+tmp/
+*.tmp
+
+# Air live reload cache
+.air
+.air.toml
